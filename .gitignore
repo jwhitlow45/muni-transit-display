@@ -1,0 +1,3 @@
+# Tooling
+.mypy_cache
+.venv
