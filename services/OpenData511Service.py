@@ -2,9 +2,6 @@ from enum import StrEnum
 from typing import Any, Literal
 
 import httpx
-from dotenv import load_dotenv
-
-load_dotenv(".env")
 
 
 class OpenData511Agency(StrEnum):

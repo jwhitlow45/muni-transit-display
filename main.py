@@ -1,7 +1,11 @@
 import os
 from pprint import pprint
 
+from dotenv import load_dotenv
+
 from services.OpenData511Service import OpenData511Agency, OpenData511Client
+
+load_dotenv(".env")
 
 OPEN_DATA_511_API_KEY = os.getenv("OPEN_DATA_511_API_KEY") or ""
 
