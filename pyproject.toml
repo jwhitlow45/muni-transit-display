@@ -15,6 +15,9 @@ dev = [
     "ruff>=0.12.11",
 ]
 
+[tool.ruff]
+line-length = 120
+
 [tool.ruff.lint]
 select = ["E", "F", "W", "I"] # Example: Enable Error, Flake8, Warning, and Isort rules
 ignore = ["E501"] # Example: Ignore line length errors
