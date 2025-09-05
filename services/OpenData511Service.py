@@ -10,9 +10,7 @@ class OpenData511Agency(StrEnum):
 
 class OpenData511Client:
     def __init__(self, api_token: str) -> None:
-        self._client = httpx.Client(
-            base_url="https://api.511.org", params={"api_key": api_token}
-        )
+        self._client = httpx.Client(base_url="https://api.511.org", params={"api_key": api_token})
 
     def _authenticated_request(
         self,
