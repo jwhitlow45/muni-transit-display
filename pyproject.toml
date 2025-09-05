@@ -3,7 +3,18 @@ name = "muni-transit-display"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.13"
 dependencies = [
-    "mypy>=1.17.1",
+    "dotenv>=0.9.9",
+    "httpx>=0.28.1",
 ]
+
+[dependency-groups]
+dev = [
+    "mypy>=1.17.1",
+    "ruff>=0.12.11",
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"] # Example: Enable Error, Flake8, Warning, and Isort rules
+ignore = ["E501"] # Example: Ignore line length errors
