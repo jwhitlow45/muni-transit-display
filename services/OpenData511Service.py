@@ -23,7 +23,14 @@ class OpenData511Client:
         json_payload: dict[str, Any] | None = None,
     ) -> httpx.Response:
         response = self._client.request(method, path, params=params, json=json_payload)
-        response.raise_for_status()
+        if response.status_code == 401:
+            raise httpx.HTTPStatusError(
+                "401 Unauthorized: OpenData511 api key is missing or invalid",
+                request=response.request,
+                response=response,
+            )
+        else:
+            response.raise_for_status()
         return response
 
     def get_transit_stop_monitoring(
