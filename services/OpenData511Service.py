@@ -1,11 +1,6 @@
-from enum import StrEnum
 from typing import Any, Literal
 
 import httpx
-
-
-class OpenData511Agency(StrEnum):
-    SFMTA = "SF"
 
 
 class OpenData511Client:
