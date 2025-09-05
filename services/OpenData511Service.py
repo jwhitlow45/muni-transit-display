@@ -34,14 +34,17 @@ class OpenData511Client:
         return response
 
     def get_transit_stop_monitoring(
-        self, agency: str, stopcode: str | int, format: Literal["json", "xml"] = "json"
+        self,
+        agency: str,
+        stopcode: str | int | None = None,
+        format: Literal["json", "xml"] = "json",
     ):
         return self._authenticated_request(
             "get",
             "/transit/StopMonitoring",
             params={
                 "agency": agency,
-                "stopcode": stopcode or None,
+                "stopcode": stopcode,
                 "format": format,
             },
         )
