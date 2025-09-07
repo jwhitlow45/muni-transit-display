@@ -3,6 +3,8 @@ from typing import Any, Literal
 import httpx
 from httpx_retry import RetryPolicy, RetryTransport
 
+from models.ServiceDelivery import ServiceDeliveryModel
+
 
 class OpenData511Client:
     def __init__(self, api_token: str) -> None:
@@ -43,7 +45,7 @@ class OpenData511Client:
         stopcode: str | int | None = None,
         format: Literal["json", "xml"] = "json",
     ):
-        return self._authenticated_request(
+        response = self._authenticated_request(
             "get",
             "/transit/StopMonitoring",
             params={
@@ -52,3 +54,4 @@ class OpenData511Client:
                 "format": format,
             },
         )
+        return ServiceDeliveryModel.model_validate(response.json())

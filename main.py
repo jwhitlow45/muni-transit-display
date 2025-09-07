@@ -1,4 +1,3 @@
-import json
 import os
 
 from dotenv import load_dotenv
@@ -22,9 +21,10 @@ def main():
             f"Environment variable '{open_data_stop_code_env_var_name}' must be set in .env file at project root"
         )
 
-    with open("out.json", "w") as f:
-        response = open_data_511_client.get_transit_stop_monitoring(OPEN_DATA_511_AGENCY_ID, open_data_stopcode_list[0])
-        json.dump(response.json(), f)
+    response = open_data_511_client.get_transit_stop_monitoring(OPEN_DATA_511_AGENCY_ID, open_data_stopcode_list[0])
+    arrival_time = response.ServiceDelivery.StopMonitoringDelivery.MonitoredStopVisit[
+        0
+    ].MonitoredVehicleJourney.MonitoredCall.AimedArrivalTime
 
 
 if __name__ == "__main__":

@@ -8,6 +8,7 @@ dependencies = [
     "dotenv>=0.9.9",
     "httpx>=0.28.1",
     "httpx-retry>=2025.4.23",
+    "pydantic>=2.11.7",
 ]
 
 [dependency-groups]
