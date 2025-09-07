@@ -14,14 +14,16 @@ OPEN_DATA_511_STOPCODES = os.getenv("OPEN_DATA_511_STOPCODES") or ""
 
 def main():
     open_data_511_client = OpenData511Client(OPEN_DATA_511_API_KEY)
-    open_data_stopcode_list = OPEN_DATA_511_STOPCODES.split(",")
+    open_data_stopcode_list = [stopcode for stopcode in OPEN_DATA_511_STOPCODES.split(",") if stopcode]
+
     if len(open_data_stopcode_list) == 0:
-        raise ValueError("Environment variable 'OPEN_DATA_511_STOPCODES' must be set in .env file at project root")
+        open_data_stop_code_env_var_name = f"{OPEN_DATA_511_STOPCODES=}".split("=")[0]
+        raise ValueError(
+            f"Environment variable '{open_data_stop_code_env_var_name}' must be set in .env file at project root"
+        )
 
     with open("out.json", "w") as f:
-        response = open_data_511_client.get_transit_stop_monitoring(
-            OPEN_DATA_511_AGENCY_ID, ",".join(open_data_stopcode_list)
-        )
+        response = open_data_511_client.get_transit_stop_monitoring(OPEN_DATA_511_AGENCY_ID, open_data_stopcode_list[0])
         json.dump(response.json(), f)
 
 
