@@ -7,6 +7,7 @@ requires-python = ">=3.13"
 dependencies = [
     "dotenv>=0.9.9",
     "httpx>=0.28.1",
+    "httpx-retry>=2025.4.23",
 ]
 
 [dependency-groups]

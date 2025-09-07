@@ -1,11 +1,22 @@
 from typing import Any, Literal
 
 import httpx
+from httpx_retry import RetryPolicy, RetryTransport
 
 
 class OpenData511Client:
     def __init__(self, api_token: str) -> None:
-        self._client = httpx.Client(base_url="https://api.511.org", params={"api_key": api_token})
+        exponential_retry_policy = (
+            RetryPolicy()
+            .with_max_retries(3)
+            .with_min_delay(0.1)
+            .with_multiplier(4)
+            .with_retry_on(lambda status_code: status_code >= 500)
+        )
+        retry_transport = RetryTransport(policy=exponential_retry_policy)
+        self._client = httpx.Client(
+            base_url="https://api.511.org", params={"api_key": api_token}, transport=retry_transport
+        )
 
     def _authenticated_request(
         self,
