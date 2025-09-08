@@ -2,7 +2,7 @@ import os
 
 from dotenv import load_dotenv
 
-from services.OpenData511Service import OpenData511Client
+from services.OpenData511 import OpenData511Client
 
 load_dotenv(".env")
 

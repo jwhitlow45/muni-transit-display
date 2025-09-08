@@ -3,7 +3,7 @@ from typing import Any, Literal
 import httpx
 from httpx_retry import RetryPolicy, RetryTransport
 
-from models.ServiceDelivery import ServiceDeliveryModel
+from models.OpenData511 import TransitStopMonitoringResponse
 
 
 class OpenData511Client:
@@ -54,4 +54,4 @@ class OpenData511Client:
                 "format": format,
             },
         )
-        return ServiceDeliveryModel.model_validate(response.json())
+        return TransitStopMonitoringResponse.model_validate(response.json())
