@@ -88,8 +88,8 @@ class TransitStopMonitoringResponse(BaseModel):
     def convert_to_display_info(self):
         stop_monitoring = self.ServiceDelivery.StopMonitoringDelivery
         response_timestamp = stop_monitoring.ResponseTimestamp
-        display_stop_visit_list = [
-            DisplayInfoModels.DisplayStopVisitModel(
+        stop_visit_list = [
+            DisplayInfoModels.StopVisitModel(
                 recorded_at=stop_visit.RecordedAtTime,
                 line_reference=stop_visit.MonitoredVehicleJourney.LineRef,
                 line_name=stop_visit.MonitoredVehicleJourney.PublishedLineName,
@@ -114,5 +114,5 @@ class TransitStopMonitoringResponse(BaseModel):
         ]
 
         return DisplayInfoModels.DisplayInfoModel(
-            response_timestamp=response_timestamp, display_stop_visit_list=display_stop_visit_list
+            response_timestamp=response_timestamp, stop_visit_list=stop_visit_list
         )

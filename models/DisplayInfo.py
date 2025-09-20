@@ -6,7 +6,7 @@ from pydantic import BaseModel
 import models.OpenData511 as OpenData511Models
 
 
-class DisplayStopVisitModel(BaseModel):
+class StopVisitModel(BaseModel):
     recorded_at: datetime
     line_reference: str
     line_name: str
@@ -21,4 +21,4 @@ class DisplayStopVisitModel(BaseModel):
 
 class DisplayInfoModel(BaseModel):
     response_timestamp: datetime
-    display_stop_visit_list: List[DisplayStopVisitModel]
+    stop_visit_list: List[StopVisitModel]
