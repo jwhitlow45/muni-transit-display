@@ -23,6 +23,10 @@ class Colors:
     MAROON = (128, 0, 0)
     SILVER = (192, 192, 192)
     GOLD = (255, 215, 0)
+    MUNI = (255, 130, 0)
+    MUNI_LESS = (150, 30, 0)
+    MUNI_ALT = (100, 0, 180)
+    MUNI_ALT_LESS = (60, 0, 140)
 
 
 def get_status_led_colors(update_datetime: datetime, refresh_interval_seconds: int):
