@@ -3,7 +3,7 @@ from typing import List
 
 from pydantic import BaseModel
 
-from models.OpenData511 import OccupancyEnum
+import models.OpenData511 as OpenData511Models
 
 
 class DisplayStopVisitModel(BaseModel):
@@ -12,7 +12,7 @@ class DisplayStopVisitModel(BaseModel):
     line_name: str
     monitored: bool
     in_congestion: bool | None
-    occupancy: OccupancyEnum | None
+    occupancy: OpenData511Models.OccupancyEnum | None
     vehicle_at_stop: bool | None
     aimed_arrival_time: datetime | None
     expected_arrival_time: datetime | None

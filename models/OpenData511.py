@@ -4,7 +4,7 @@ from typing import Annotated, List
 
 from pydantic import BaseModel, BeforeValidator, Field
 
-from models.DisplayInfo import DisplayInfoModel, DisplayStopVisitModel
+import models.DisplayInfo as DisplayInfoModels
 
 
 def boolean_parser(v: bool | str):
@@ -89,7 +89,7 @@ class TransitStopMonitoringResponse(BaseModel):
         stop_monitoring = self.ServiceDelivery.StopMonitoringDelivery
         response_timestamp = stop_monitoring.ResponseTimestamp
         display_stop_visit_list = [
-            DisplayStopVisitModel(
+            DisplayInfoModels.DisplayStopVisitModel(
                 recorded_at=stop_visit.RecordedAtTime,
                 line_reference=stop_visit.MonitoredVehicleJourney.LineRef,
                 line_name=stop_visit.MonitoredVehicleJourney.PublishedLineName,
@@ -113,4 +113,6 @@ class TransitStopMonitoringResponse(BaseModel):
             if stop_visit.MonitoredVehicleJourney  # optional from API so ensure existence
         ]
 
-        return DisplayInfoModel(response_timestamp=response_timestamp, display_stop_visit_list=display_stop_visit_list)
+        return DisplayInfoModels.DisplayInfoModel(
+            response_timestamp=response_timestamp, display_stop_visit_list=display_stop_visit_list
+        )
