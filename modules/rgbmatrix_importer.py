@@ -10,5 +10,5 @@ except ImportError:
 
 
 @cache  # saves re-import when used across multiple files
-def getRgbMatrixImports():
+def get_rgb_matrix_imports():
     return RGBMatrix, RGBMatrixOptions, graphics

@@ -1,12 +1,12 @@
 # hiding all the ugly configuration and type suppression in here to keep main driver program clean
-from modules.rgbmatrix_importer import getRgbMatrixImports
+from modules.rgbmatrix_importer import get_rgb_matrix_imports
 
-RGBMatrix, RGBMatrixOptions, _ = getRgbMatrixImports()
+RGBMatrix, RGBMatrixOptions, _ = get_rgb_matrix_imports()
 
 
 # WARNING: The RGBMatrix class returned by this function MUST be kept in memory while using canvas
 # Failure to do so results in SEGMENTATION FAULT and BUS ERROR problems
-def getRGBMatrix(
+def get_rgb_matrix(
     *,
     rows: int,
     cols: int,
