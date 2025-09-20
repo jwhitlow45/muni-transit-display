@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 
 # Common RGB color values as tuples
@@ -25,19 +25,16 @@ class Colors:
     GOLD = (255, 215, 0)
 
 
-def get_status_led_colors(update_datetime: datetime):
-    now = datetime.now()
+def get_status_led_colors(update_datetime: datetime, refresh_interval_seconds: int):
+    now = datetime.now(timezone.utc)
     difference = now - update_datetime
 
-    if difference.seconds < 2:
+    if difference.seconds < refresh_interval_seconds * 2:
         return Colors.GREEN
-    if difference.seconds < 4:
+    if difference.seconds < refresh_interval_seconds * 4:
         return Colors.YELLOW
-    if difference.seconds < 6:
-        return Colors.RED
 
-    # return white in case of negative value (update_datetime is somehow in future relative to now), should be impossible
-    return Colors.WHITE
+    return Colors.RED  # information is very out of date
 
 
 def get_text_center_x_pos(text: str, character_width: int, display_width: int):
