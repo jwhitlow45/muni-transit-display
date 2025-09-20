@@ -26,6 +26,18 @@ class Colors:
 
 
 def get_status_led_colors(update_datetime: datetime, refresh_interval_seconds: int):
+    """Status LED that transitions from green to yellow to red as update_datetime becomes more stale
+    Green -> update_datetime is < (refresh_interval_seconds * 2) seconds in the past
+    Yellow -> update_datetime is < (refresh_interval_seconds * 4) seconds in the past
+    RED -> update_datetime is >= (refresh_interval_seconds * 4) seconds in the past
+
+    Args:
+        update_datetime (datetime): time when update was performed
+        refresh_interval_seconds (int): refresh interval in seconds
+
+    Returns:
+        (int, int, int): tuple representing led color in RGB
+    """
     now = datetime.now(timezone.utc)
     difference = now - update_datetime
 
@@ -38,6 +50,16 @@ def get_status_led_colors(update_datetime: datetime, refresh_interval_seconds: i
 
 
 def get_text_center_x_pos(text: str, character_width: int, display_width: int):
+    """Calculates the x position for centering text on a display
+
+    Args:
+        text (str): text to center
+        character_width (int): width of a character in the used font
+        display_width (int): width of the display to center text on
+
+    Returns:
+        int: x position which will center the text on the display
+    """
     text_length = len(text)
     text_width = text_length * character_width
     center_display_pixel = (display_width - 1) // 2  # bias left
