@@ -29,6 +29,22 @@ class Colors:
     MUNI_ALT_LESS = (60, 0, 140)
 
 
+def _calculate_absolute_time_difference_from_now(datetime_obj: datetime, tz_naive_now: datetime = datetime.now()):
+    """Calculates difference in time between now and a provided datetime. Handles both naive and aware datetime objects.
+
+    Args:
+        datetime_obj (datetime): datetime object to calculate time difference from now for
+
+    Returns:
+        datetime.timedelta: difference between now and datetime_obj
+    """
+    if tz_naive_now.tzinfo is not None:
+        raise ValueError("tz_naive_now must be a naive datetime, found tzinfo on datetime object")
+
+    now = tz_naive_now if datetime_obj.tzinfo is None else tz_naive_now.replace(tzinfo=timezone.utc)
+    return (datetime_obj - now) if datetime_obj > now else (now - datetime_obj)
+
+
 def get_status_led_colors(update_datetime: datetime, refresh_interval_seconds: int):
     """Status LED that transitions from green to yellow to red as update_datetime becomes more stale
     Green -> update_datetime is < (refresh_interval_seconds * 2) seconds in the past
@@ -42,12 +58,7 @@ def get_status_led_colors(update_datetime: datetime, refresh_interval_seconds: i
     Returns:
         (int, int, int): tuple representing led color in RGB
     """
-    if update_datetime.tzinfo is None:
-        now = datetime.now()
-    else:
-        now = datetime.now(timezone.utc)
-
-    difference = now - update_datetime
+    difference = _calculate_absolute_time_difference_from_now(update_datetime)
 
     if difference.seconds < refresh_interval_seconds * 2:
         return Colors.GREEN
