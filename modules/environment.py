@@ -6,6 +6,8 @@ from dotenv import load_dotenv
 
 load_dotenv(".env")
 
+LOG_LEVEL = os.getenv("LOG_LEVEL") or ""
+
 OPEN_DATA_511_API_KEY_0 = os.getenv("OPEN_DATA_511_API_KEY_0") or ""
 OPEN_DATA_511_API_KEY_1 = os.getenv("OPEN_DATA_511_API_KEY_1") or ""
 OPEN_DATA_511_AGENCY_ID = os.getenv("OPEN_DATA_511_AGENCY_ID") or ""
