@@ -8,7 +8,7 @@ load_dotenv(".env")
 OPEN_DATA_511_API_KEY_0 = os.getenv("OPEN_DATA_511_API_KEY_0") or ""
 OPEN_DATA_511_API_KEY_1 = os.getenv("OPEN_DATA_511_API_KEY_1") or ""
 OPEN_DATA_511_AGENCY_ID = os.getenv("OPEN_DATA_511_AGENCY_ID") or ""
-OPEN_DATA_511_STOPCODES = os.getenv("OPEN_DATA_511_STOPCODES") or ""
+_OPEN_DATA_511_STOPCODES = os.getenv("OPEN_DATA_511_STOPCODES") or ""
 
 LED_MATRIX_COLS = int(os.getenv("LED_MATRIX_COLS") or -1)
 LED_MATRIX_ROWS = int(os.getenv("LED_MATRIX_ROWS") or -1)
@@ -21,21 +21,21 @@ LED_MATRIX_MAX_BRIGHTNESS = int(os.getenv("LED_MATRIX_MAX_BRIGHTNESS") or -1)
 REFRESH_API_INTERVAL_SECONDS = int(os.getenv("REFRESH_API_INTERVAL_SECONDS") or -1)
 REFRESH_DISPLAY_INTERVAL_SECONDS = int(os.getenv("REFRESH_DISPLAY_INTERVAL_SECONDS") or -1)
 
-LINE_REFERENCES = os.getenv("LINE_REFERENCES") or ""
-LINE_STOPCODES = os.getenv("LINE_STOPCODES") or ""
-LINE_SYMBOLS = os.getenv("LINE_SYMBOLS") or ""
+_LINE_REFERENCES = os.getenv("LINE_REFERENCES") or ""
+_LINE_STOPCODES = os.getenv("LINE_STOPCODES") or ""
+_LINE_SYMBOLS = os.getenv("LINE_SYMBOLS") or ""
 
 # process env vars
-OPEN_DATA_511_STOPCODE_LIST = [stopcode for stopcode in OPEN_DATA_511_STOPCODES.split(",") if stopcode]
+OPEN_DATA_511_STOPCODE_LIST = [stopcode for stopcode in _OPEN_DATA_511_STOPCODES.split(",") if stopcode]
 if len(OPEN_DATA_511_STOPCODE_LIST) == 0:
-    open_data_stop_code_env_var_name = f"{OPEN_DATA_511_STOPCODES=}".split("=")[0]
+    open_data_stop_code_env_var_name = f"{_OPEN_DATA_511_STOPCODES=}".split("=")[0]
     raise ValueError(
         f"Environment variable '{open_data_stop_code_env_var_name}' must be set in .env file at project root"
     )
 
-LINE_REFERENCE_LIST = LINE_REFERENCES.split(",")
-LINE_STOPCODE_LIST = LINE_STOPCODES.split(",")
-LINE_SYMBOL_LIST = LINE_SYMBOLS.split(",")
+LINE_REFERENCE_LIST = _LINE_REFERENCES.split(",")
+LINE_STOPCODE_LIST = _LINE_STOPCODES.split(",")
+LINE_SYMBOL_LIST = _LINE_SYMBOLS.split(",")
 if not len(LINE_REFERENCE_LIST) == len(LINE_STOPCODE_LIST) == len(LINE_SYMBOL_LIST):
     raise ValueError(
         "Environment variables relating to line reference disambiguation must all have the same number of entries"
