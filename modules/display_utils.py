@@ -89,9 +89,10 @@ def get_text_center_x_pos(text: str, character_width: int, display_width: int):
     """
     text_length = len(text)
     text_width = text_length * character_width
-    center_display_pixel = (display_width - 1) // 2  # bias left
-    text_offset = text_width // 2  # bias left
-    return center_display_pixel - text_offset
+    center_display_pixel = (display_width - 1) / 2
+    text_offset = text_width / 2
+    character_offset = character_width / 4
+    return int(center_display_pixel - text_offset + character_offset)  # bias left through truncation
 
 
 def get_text_center_y_pos(character_height: int, display_height: int):
