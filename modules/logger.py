@@ -3,7 +3,7 @@ import os
 
 from modules.environment import LOG_LEVEL
 
-log_filename = os.path.join(os.getcwd(), "muni-transit-display.log")
+log_filename = os.path.join(os.getcwd(), "transit-display.log")
 
 
 log_level = LOG_LEVEL.upper() or logging.INFO
