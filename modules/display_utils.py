@@ -42,7 +42,11 @@ def get_status_led_colors(update_datetime: datetime, refresh_interval_seconds: i
     Returns:
         (int, int, int): tuple representing led color in RGB
     """
-    now = datetime.now(timezone.utc)
+    if update_datetime.tzinfo is None:
+        now = datetime.now()
+    else:
+        now = datetime.now(timezone.utc)
+
     difference = now - update_datetime
 
     if difference.seconds < refresh_interval_seconds * 2:
