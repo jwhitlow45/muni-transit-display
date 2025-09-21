@@ -84,3 +84,40 @@ def get_text_center_x_pos(text: str, character_width: int, display_width: int):
     center_display_pixel = (display_width - 1) // 2  # bias left
     text_offset = text_width // 2  # bias left
     return center_display_pixel - text_offset
+
+
+def get_text_center_y_pos(character_height: int, display_height: int):
+    """Calculates the y position for centering text on a display
+
+    Args:
+        character_height (int): height of a character in the used font
+        display_height (int): height of the display to center text on
+
+    Returns:
+        int: y position which will center the text on the display
+    """
+    center_display_pixel = (display_height - 1) // 2  # bias up
+    text_offset = character_height // 2  # bias up
+    return center_display_pixel + text_offset
+
+
+def generate_display_line_row(line_reference: str, line_disambiguation_symbol: str, line_arrival_times: list[datetime]):
+    """Formats a line reference, disambiguation symbol, and line arrival times into an inline string
+
+    Args:
+        line_reference (str): Line reference value
+        line_disambiguation_symbol (str): Symbol used for disambiguating lines with the same reference
+        line_arrival_times (list[datetime]): Arrival times for the given line
+
+    Returns:
+        str: Inline string representing a line and its arrival times
+    """
+    time_until_arrival_minutes_list: list[str] = []
+    now = datetime.now()
+
+    for arrival_time in line_arrival_times:
+        difference = _calculate_absolute_time_difference_from_now(arrival_time, now)
+
+        time_until_arrival_minutes_list.append(str(difference.seconds // 60))  # round down to nearest minute
+
+    return f"{line_reference}{line_disambiguation_symbol} " + " ".join(time_until_arrival_minutes_list)
