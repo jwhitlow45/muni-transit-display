@@ -81,7 +81,7 @@ def display_loop():
                         if (
                             stop_visit.expected_arrival_time is not None
                             and stop_visit.expected_arrival_time > now
-                            and len(line_reference_list_map[stop_visit.line_reference]) < 2
+                            and len(line_reference_list_map[stop_visit.line_reference]) < env.FUTURE_STOP_VISITS_SHOWN
                         ):
                             line_reference_list_map[stop_visit.line_reference].append(stop_visit)
 

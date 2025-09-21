@@ -49,3 +49,5 @@ for line_reference, stopcode, symbol in zip(
     _LINE_REFERENCE_LIST, _LINE_STOPCODE_LIST, _LINE_DISAMBIGUATION_SYMBOL_LIST
 ):
     LINE_DISAMBIGUATION_SYMBOL_DICT[stopcode][line_reference] = symbol
+
+FUTURE_STOP_VISITS_SHOWN = int(os.getenv("FUTURE_STOP_VISITS_SHOWN") or -1)
