@@ -109,13 +109,19 @@ def get_text_center_y_pos(character_height: int, display_height: int):
     return center_display_pixel + text_offset
 
 
-def generate_display_line_row(line_reference: str, line_disambiguation_symbol: str, line_arrival_times: list[datetime]):
+def generate_display_line_row(
+    line_reference: str,
+    line_disambiguation_symbol: str,
+    line_arrival_times: list[datetime],
+    now=datetime.now(timezone.utc),
+):
     """Formats a line reference, disambiguation symbol, and line arrival times into an inline string
 
     Args:
         line_reference (str): Line reference value
         line_disambiguation_symbol (str): Symbol used for disambiguating lines with the same reference
         line_arrival_times (list[datetime]): Arrival times for the given line
+        now (datetime) (optional): Datetime object from which to compare times to, must be tz-aware and in UTC
 
     Returns:
         str: Inline string representing a line and its arrival times
@@ -124,12 +130,17 @@ def generate_display_line_row(line_reference: str, line_disambiguation_symbol: s
     logger.debug(f"line_disambiguation_symbol: {line_disambiguation_symbol}")
     logger.debug(f"line_arrival_times: {line_arrival_times}")
     time_until_arrival_minutes_list: list[str] = []
-    now = datetime.now(timezone.utc)
 
     for arrival_time in line_arrival_times:
         difference = _calculate_absolute_time_difference_from_now(arrival_time, now)
-        time_until_arrival_minutes_list.append(str(difference.seconds // 60))  # round down to nearest minute
+        # round down to nearest minute
+        difference_str = str(difference.seconds // 60)
+        # prepend single digit arrival times with 0 for alignment consistency
+        difference_str_padded = difference_str if len(difference_str) > 1 else "0" + difference_str
+        time_until_arrival_minutes_list.append(difference_str_padded)
 
-    display_line = f"{line_reference}{line_disambiguation_symbol} " + " ".join(time_until_arrival_minutes_list)
+    display_line = (
+        f"{line_reference}{line_disambiguation_symbol} " + " ".join(time_until_arrival_minutes_list)
+    ).replace("0", "O")  # in the provided fonts the 0 is skinny and looks awful so use O instead
     logger.debug(f"display_line: {display_line}")
     return display_line
