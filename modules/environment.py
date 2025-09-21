@@ -23,7 +23,7 @@ REFRESH_DISPLAY_INTERVAL_SECONDS = int(os.getenv("REFRESH_DISPLAY_INTERVAL_SECON
 
 _LINE_REFERENCES = os.getenv("LINE_REFERENCES") or ""
 _LINE_STOPCODES = os.getenv("LINE_STOPCODES") or ""
-_LINE_SYMBOLS = os.getenv("LINE_SYMBOLS") or ""
+_LINE_DISAMBIGUATION_SYMBOLS = os.getenv("LINE_DISAMBIGUATION_SYMBOLS") or ""
 
 # process env vars
 OPEN_DATA_511_STOPCODE_LIST = [stopcode for stopcode in _OPEN_DATA_511_STOPCODES.split(",") if stopcode]
@@ -35,8 +35,8 @@ if len(OPEN_DATA_511_STOPCODE_LIST) == 0:
 
 LINE_REFERENCE_LIST = _LINE_REFERENCES.split(",")
 LINE_STOPCODE_LIST = _LINE_STOPCODES.split(",")
-LINE_SYMBOL_LIST = _LINE_SYMBOLS.split(",")
-if not len(LINE_REFERENCE_LIST) == len(LINE_STOPCODE_LIST) == len(LINE_SYMBOL_LIST):
+LINE_DISAMBIGUATION_SYMBOL_LIST = _LINE_DISAMBIGUATION_SYMBOLS.split(",")
+if not len(LINE_REFERENCE_LIST) == len(LINE_STOPCODE_LIST) == len(LINE_DISAMBIGUATION_SYMBOL_LIST):
     raise ValueError(
         "Environment variables relating to line reference disambiguation must all have the same number of entries"
     )
