@@ -1,5 +1,6 @@
 # import env vars
 import os
+from collections import defaultdict
 
 from dotenv import load_dotenv
 
@@ -33,10 +34,16 @@ if len(OPEN_DATA_511_STOPCODE_LIST) == 0:
         f"Environment variable '{open_data_stop_code_env_var_name}' must be set in .env file at project root"
     )
 
-LINE_REFERENCE_LIST = _LINE_REFERENCES.split(",")
-LINE_STOPCODE_LIST = _LINE_STOPCODES.split(",")
-LINE_DISAMBIGUATION_SYMBOL_LIST = _LINE_DISAMBIGUATION_SYMBOLS.split(",")
-if not len(LINE_REFERENCE_LIST) == len(LINE_STOPCODE_LIST) == len(LINE_DISAMBIGUATION_SYMBOL_LIST):
+_LINE_REFERENCE_LIST = _LINE_REFERENCES.split(",")
+_LINE_STOPCODE_LIST = _LINE_STOPCODES.split(",")
+_LINE_DISAMBIGUATION_SYMBOL_LIST = _LINE_DISAMBIGUATION_SYMBOLS.split(",")
+if not len(_LINE_REFERENCE_LIST) == len(_LINE_STOPCODE_LIST) == len(_LINE_DISAMBIGUATION_SYMBOL_LIST):
     raise ValueError(
         "Environment variables relating to line reference disambiguation must all have the same number of entries"
     )
+
+LINE_DISAMBIGUATION_SYMBOL_DICT: dict[str, dict[str, str]] = defaultdict(dict)
+for line_reference, stopcode, symbol in zip(
+    _LINE_REFERENCE_LIST, _LINE_STOPCODE_LIST, _LINE_DISAMBIGUATION_SYMBOL_LIST
+):
+    LINE_DISAMBIGUATION_SYMBOL_DICT[stopcode][line_reference] = symbol
