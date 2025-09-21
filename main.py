@@ -1,6 +1,7 @@
 import threading
 from collections import defaultdict
 from datetime import datetime, timezone
+from os import path
 from time import sleep
 
 from httpx import HTTPStatusError
@@ -42,7 +43,7 @@ def display_loop():
 
     # setup font
     font = graphics.Font()
-    font.LoadFont("fonts/5x7.bdf")
+    font.LoadFont(path.join("fonts", env.FONT))
     font_color = graphics.Color(*Colors.MUNI_LESS)
     font_color_1 = graphics.Color(*Colors.MUNI_ALT_LESS)
 
