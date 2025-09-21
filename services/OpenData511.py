@@ -4,6 +4,7 @@ import httpx
 from httpx_retry import RetryPolicy, RetryTransport
 
 from models.OpenData511 import TransitStopMonitoringResponse
+from modules.logger import logger
 
 
 class OpenData511Client:
@@ -29,6 +30,7 @@ class OpenData511Client:
         json_payload: dict[str, Any] | None = None,
     ) -> httpx.Response:
         response = self._client.request(method, path, params=params, json=json_payload)
+        logger.debug(f"Response json: {response.json()}")
         if response.status_code == 401:
             raise httpx.HTTPStatusError(
                 "401 Unauthorized: OpenData511 api key is missing or invalid",
