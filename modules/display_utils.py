@@ -1,5 +1,7 @@
 from datetime import datetime, timezone
 
+from modules.logger import logger
+
 
 # Common RGB color values as tuples
 class Colors:
@@ -29,20 +31,26 @@ class Colors:
     MUNI_ALT_LESS = (60, 0, 140)
 
 
-def _calculate_absolute_time_difference_from_now(datetime_obj: datetime, tz_naive_now: datetime = datetime.now()):
+def _calculate_absolute_time_difference_from_now(
+    datetime_obj: datetime, tz_aware_now: datetime = datetime.now(timezone.utc)
+):
     """Calculates difference in time between now and a provided datetime. Handles both naive and aware datetime objects.
+    Assumes UTC for naive datetime objects
 
     Args:
         datetime_obj (datetime): datetime object to calculate time difference from now for
+        tz_aware_now (datetime) (optional): datetime object representing now to compare against, must be tz-aware with tzinfo of timezone.utc
 
     Returns:
         datetime.timedelta: difference between now and datetime_obj
     """
-    if tz_naive_now.tzinfo is not None:
-        raise ValueError("tz_naive_now must be a naive datetime, found tzinfo on datetime object")
+    if tz_aware_now.tzinfo is None or tz_aware_now.tzinfo != timezone.utc:
+        raise ValueError("tz_aware_now must be an aware datetime with utc timestamp")
 
-    now = tz_naive_now if datetime_obj.tzinfo is None else tz_naive_now.replace(tzinfo=timezone.utc)
-    return (datetime_obj - now) if datetime_obj > now else (now - datetime_obj)
+    datetime_obj_utc = datetime_obj.astimezone(timezone.utc)
+    difference = abs(datetime_obj_utc - tz_aware_now)
+    logger.debug(f"difference: {difference}")
+    return difference
 
 
 def get_status_led_colors(update_datetime: datetime, refresh_interval_seconds: int):
@@ -112,12 +120,16 @@ def generate_display_line_row(line_reference: str, line_disambiguation_symbol: s
     Returns:
         str: Inline string representing a line and its arrival times
     """
+    logger.debug(f"line_reference: {line_reference}")
+    logger.debug(f"line_disambiguation_symbol: {line_disambiguation_symbol}")
+    logger.debug(f"line_arrival_times: {line_arrival_times}")
     time_until_arrival_minutes_list: list[str] = []
-    now = datetime.now()
+    now = datetime.now(timezone.utc)
 
     for arrival_time in line_arrival_times:
         difference = _calculate_absolute_time_difference_from_now(arrival_time, now)
-
         time_until_arrival_minutes_list.append(str(difference.seconds // 60))  # round down to nearest minute
 
-    return f"{line_reference}{line_disambiguation_symbol} " + " ".join(time_until_arrival_minutes_list)
+    display_line = f"{line_reference}{line_disambiguation_symbol} " + " ".join(time_until_arrival_minutes_list)
+    logger.debug(f"display_line: {display_line}")
+    return display_line
