@@ -44,8 +44,7 @@ def display_loop():
     # setup font
     font = graphics.Font()
     font.LoadFont(path.join("fonts", env.FONT))
-    font_color = graphics.Color(*Colors.MUNI_LESS)
-    font_color_1 = graphics.Color(*Colors.MUNI_ALT_LESS)
+    font_color = graphics.Color(*getattr(Colors, env.FONT_COLOR))
 
     # setup matrix and canvas for drawing to display
     matrix = get_rgb_matrix(

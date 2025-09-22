@@ -52,3 +52,4 @@ for line_reference, stopcode, symbol in zip(
 
 FUTURE_STOP_VISITS_SHOWN = int(os.getenv("FUTURE_STOP_VISITS_SHOWN") or -1)
 FONT = os.getenv("FONT") or ""
+FONT_COLOR = os.getenv("FONT_COLOR") or ""
