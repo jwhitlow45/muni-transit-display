@@ -182,7 +182,7 @@ def api_loop():
 
         with display_info_lock:
             # NOTE:
-            display_info_dict = display_info_dict or {} | display_info_dict_staged
+            display_info_dict = (display_info_dict or {}) | display_info_dict_staged
 
         # round-robin api requests across clients to spread api usage across api keys
         # this could be done smarter to avoid detection of single client using multiple api keys, but since opendata511
