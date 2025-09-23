@@ -1,3 +1,4 @@
+import sys
 import threading
 from collections import defaultdict
 from datetime import datetime, timezone
@@ -192,4 +193,8 @@ def api_loop():
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception:
+        logger.exception("Uncaught exception terminated program", exc_info=True)
+        sys.exit(1)
