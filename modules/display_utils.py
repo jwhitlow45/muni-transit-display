@@ -31,9 +31,7 @@ class Colors:
     MUNI_ALT_LESS = (60, 0, 140)
 
 
-def _calculate_absolute_time_difference_from_now(
-    datetime_obj: datetime, tz_aware_now: datetime = datetime.now(timezone.utc)
-):
+def _calculate_absolute_time_difference_from_now(datetime_obj: datetime, tz_aware_now: datetime):
     """Calculates difference in time between now and a provided datetime. Handles both naive and aware datetime objects.
     Assumes UTC for naive datetime objects
 
@@ -66,7 +64,7 @@ def get_status_led_colors(update_datetime: datetime, refresh_interval_seconds: i
     Returns:
         (int, int, int): tuple representing led color in RGB
     """
-    difference = _calculate_absolute_time_difference_from_now(update_datetime)
+    difference = _calculate_absolute_time_difference_from_now(update_datetime, datetime.now(timezone.utc))
 
     if difference.seconds < refresh_interval_seconds * 2:
         return Colors.GREEN
