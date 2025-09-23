@@ -116,6 +116,8 @@ def display_loop():
                 oldest_response_timestamp = min(
                     [display_info.response_timestamp for display_info in display_info_dict.values()]
                 )
+                logger.debug(f"oldest_response_timestamp: {oldest_response_timestamp}")
+                logger.debug(display_info_dict)
                 status_led_colors = get_status_led_colors(oldest_response_timestamp, env.REFRESH_API_INTERVAL_SECONDS)
                 # do all drawing as close as possible to canvas clear to prevent flickering
                 canvas.Clear()
