@@ -7,7 +7,7 @@ requires-python = "==3.11.2"
 dependencies = [
     "dotenv>=0.9.9",
     "httpx>=0.28.1",
-    "httpx-retry>=2025.4.23",
+    "httpx-retries>=0.4.2",
     "pydantic>=2.11.7",
 ]
 

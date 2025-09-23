@@ -1,7 +1,8 @@
+from http import HTTPMethod
 from typing import Any, Literal
 
 import httpx
-from httpx_retry import RetryPolicy, RetryTransport
+from httpx_retries import Retry, RetryTransport
 
 from models.OpenData511 import TransitStopMonitoringResponse
 from modules.logger import logger
@@ -9,16 +10,23 @@ from modules.logger import logger
 
 class OpenData511Client:
     def __init__(self, api_token: str) -> None:
-        exponential_retry_policy = (
-            RetryPolicy()
-            .with_max_retries(3)
-            .with_min_delay(0.1)
-            .with_multiplier(4)
-            .with_retry_on(lambda status_code: status_code >= 500)
+        exponential_retry_policy = Retry(
+            total=3,
+            allowed_methods=[HTTPMethod.GET],
+            status_forcelist=[500, 502, 503, 504],
+            retry_on_exceptions=[httpx.ReadTimeout],
+            backoff_factor=1,
+            respect_retry_after_header=True,
+            max_backoff_wait=10,
+            backoff_jitter=1,
         )
-        retry_transport = RetryTransport(policy=exponential_retry_policy)
+        retry_transport = RetryTransport(retry=exponential_retry_policy)
+        timeout_config = httpx.Timeout(timeout=10.0)
         self._client = httpx.Client(
-            base_url="https://api.511.org", params={"api_key": api_token}, transport=retry_transport
+            base_url="https://api.511.org",
+            params={"api_key": api_token},
+            transport=retry_transport,
+            timeout=timeout_config,
         )
 
     def _authenticated_request(
