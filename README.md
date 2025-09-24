@@ -10,7 +10,7 @@ Display estimated arrival information about your local transit stops on an LED m
 
 ## Requirements
 - OS: Linux (headless Raspberry Pi OS using Bookworm 64-bit recommended)
-- Python 3.11.2
+- Python 3.11.2 (newest version of Python I could build `rpi-rgb-led-matrix` with)
 - git
 
 ## Setup
