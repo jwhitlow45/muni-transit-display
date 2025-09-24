@@ -181,7 +181,8 @@ def api_loop():
                 )
 
         with display_info_lock:
-            # NOTE:
+            # NOTE: only want to overwrite stops for data we have fetched in case one of the API requests fails
+            # This makes the display fault tolerant to occasional API request failures
             display_info_dict = (display_info_dict or {}) | display_info_dict_staged
 
         # round-robin api requests across clients to spread api usage across api keys
