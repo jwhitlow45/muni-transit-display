@@ -14,7 +14,7 @@ Display estimated arrival information about your local transit stops on an LED m
 - git
 
 ## Setup
-### Script (requires root)
+### Install script (requires root)
 ```
 sudo su
 chmod +x ./setup.sh
@@ -30,207 +30,52 @@ Unfortunately due to the low-level nature of this project I am unaware of a way 
 
 Total installation time is ~2 minutes on a Raspberry Pi 3.
 
-## Environment Variables
-The above setup script copies the `.env.example` to `.env`, but still requires configuration. Each environment variable is documented below. Be sure to follow the instructions carefully.
+While the above setup script copies the `.env.example` to `.env` it still requires configuration. Each environment variable is documented in [ENVIRONMENT.md](ENVIRONMENT.md). Be sure to follow the instructions carefully.
 
-Variables set to non-empty strings ("\<value\>") or that are pre-populated are required
-
-Variables set to empty strings ("") are optional
-
-### OpenData511 variables
-#### OPEN_DATA_511_API_KEY_0/OPEN_DATA_511_API_KEY_1
+### Running the program (requires root)
+Run the `main.py` file in the root of the project:
 ```
-OPEN_DATA_511_API_KEY_0="<api-key>"
-OPEN_DATA_511_API_KEY_1=""
+sudo python3 main.py
 ```
-Get an API key here - https://511.org/open-data/token
-
-OpenData511 is not responding to requests for rate limit increases, meaning if you want to monitor more than one stop per minute you must use an additional API key. Please use this responsibly and do not abuse their API.
-
-Only `OPEN_DATA_511_API_KEY_0` is required, but `OPEN_DATA_511_API_KEY_1` can be provided to "double" the program's rate limit from 60 to 120 requests per hour.
-
-#### OPEN_DATA_511_AGENCY_ID
+It can also be run as a background process so it persists after your terminal is closed:
 ```
-OPEN_DATA_511_AGENCY_ID="<agency-id>"
-```
-Agency ID of the transit agency you wish to monitor the stops of
-
-Your transit agency's agency ID can be found by visiting the following url: `https://api.511.org/transit/operators?api_key=<your-api-key>`
-
-#### OPEN_DATA_511_STOPCODES
-```
-OPEN_DATA_511_STOPCODES="<stopcode-0>,<stopcode-1>"
-```
-Comma-delimited list of stopcodes to monitor. These are the unique ids assigned to transit stops by a transit agency and should be accessible via your transit agencies website. Alternatively, visit the following URL and search for `StopPointRef` in the returned XML document: `https://api.511.org/transit/StopMonitoring?api_key=<your-api-key>&agency=<your-agency-id>`
-
-### LED Matrix variables
-These are all values inherent to `rpi-rgb-led-matrix`. See the linked documentation for how they should be configured.
-
-[Panel configuration](https://github.com/hzeller/rpi-rgb-led-matrix?tab=readme-ov-file#types-of-displays)
-```
-LED_MATRIX_ROWS="<integer>"
-LED_MATRIX_COLS="<integer>"
-LED_MATRIX_CHAIN_LENGTH="<integer>"
-LED_MATRIX_PARALLEL="<integer>"
+sudo python3 main.py &
 ```
 
-[GPIO speed](https://github.com/hzeller/rpi-rgb-led-matrix?tab=readme-ov-file#gpio-speed)
-```
-LED_MATRIX_GPIO_SLOWDOWN="10"
-```
-Recommended to use the highest slowdown value of 10 to give lowest chance of display flickering
+## Development
+This project relies on two separate environments to be developed. One on your local machine and one on the Raspberry Pi.
 
-[Hardware mappings](https://github.com/hzeller/rpi-rgb-led-matrix/blob/master/wiring.md#alternative-hardware-mappings)
-```
-LED_MATRIX_HARDWARE_MAPPING="<hardware-mapping>"
-```
-This will be `adafruit-hat` if you use the Adafruit RGB Matrix Bonnet linked in the BOM
+Development can be done on the Raspberry Pi directly, but unless you have a more powerful one that can better handle remote-IDE setups, I highly recommend using your favorite remote file‑syncing tool to deploy your changes to your Pi otherwise you will wait 5 minutes for every linter update.
 
-[Brightness](https://github.com/hzeller/rpi-rgb-led-matrix?tab=readme-ov-file#misc-options)
-```
-LED_MATRIX_MAX_BRIGHTNESS="<integer>"
-```
+### Raspberry Pi Environment Setup
+Run the setup script as shown above.
 
-### Refresh interval variables
-#### REFRESH_API_INTERVAL_SECONDS
-```
-REFRESH_API_INTERVAL_SECONDS="62"
-```
-How often new data is fetched from the OpenData511 API. Recommended default of 62 to be just above default rate limit of 60 requests per hour.
+If doing development directly on the Pi also configure environment variables which are in [ENVIRONMENT.md](ENVIRONMENT.md).
 
-All stopcodes are checked every `REFRESH_API_INTERVAL_SECONDS`, each requiring their own request, so the minimum `REFRESH_API_INTERVAL_SECONDS` can be calculated to be:
+### Local Machine Environment Setup
+#### Setup Python virtual environment and install dependencies
 ```
-(number of comma-delimited OPEN_DATA_511_STOPCODES * 60) / number of API keys provided
+uv sync
 ```
 
-It is recommended to set `REFRESH_API_INTERVAL_SECONDS` slightly higher than the calculated value to avoid running into the rate-limit.
+#### Configure Environment Variables
+Configure environment variables which are in [ENVIRONMENT.md](ENVIRONMENT.md).
 
-#### REFRESH_DISPLAY_INTERVAL_SECONDS
+#### Deploying changes
+I found it simple enough to use rsync and scp to send files from my local machine to my Pi after making changes. The following command executed from the root of the repo accomplishes that:
 ```
-REFRESH_DISPLAY_INTERVAL_SECONDS="5"
+rsync -aPh --delete --filter=':- .gitignore' --exclude=.git/ . <user>@<host>:<path-to-remote-project> && scp .env <user>@<host>:<path-to-remote-project>/.env
 ```
-How often arrival time calculations are performed based on data fetched from the API and written to the display. Recommended default of 5.
+As always use whatever workflow works for you.
 
-It is necessary for this to be separate from `REFRESH_API_INTERVAL_SECONDS` to allow minutes until arrival time to be re-calculated and updated independent of API requests.
-
-
-### Line disambiguation symbols (optional)
+#### Executing changes
+To execute changes I recommend using the `-B` flag to avoid creating `__pycache__` files. They cause permission conflicts with the above rsync + scp method od "deployment":
 ```
-LINE_REFERENCES=""
-LINE_STOPCODES=""
-LINE_DISAMBIGUATION_SYMBOLS=""
-```
-When multiple transit lines share the same reference but travel in different directions (or serve different stops), you can use these variables to assign unique symbols next to line references on your display.
-
-#### LINE_REFERENCES
-Comma-separated list of line references that need disambiguation.
-
-There should be an entry for each line + stopcode combination needing disambiguation.
-
-Example: Line 1 and line 2 both serve stops A and B, but in different directions:
-```
-LINE_REFERENCES="1,2,1,2"
+sudo python3 -B main.py
 ```
 
-#### LINE_STOPCODES
-Comma-separated list of stopcodes corresponding to each entry in LINE_REFERENCES.
+There is also support for a `LOG_LEVEL` environment variable supporting the usual `fatal|error|warning|info|debug` log levels. I'll be honest I kinda chucked in debug statements wherever I thought they would be helpful without thinking about traceability. I've never been a super low-level engineer so I have little to no experience writing professional debug logs. The option is there though.
 
-Each entry matches up to a corresponding entry at the same position in LINE_REFERENCES.
+#### Testing
+This project didn't feel significant enough to warrant a test suite implementation. I'm not a Python developer and this already took me quite a while to design to be as robust as it is. Feel free to write tests for the code and PR them. I'm not going to.
 
-Example: The first two entries in `LINE_REFERENCES` are for stop A and the next two for stop B:
-```
-LINE_STOPCODES="A,A,B,B"
-```
-
-#### LINE_DISAMBIGUATION_SYMBOLS
-Comma-separated list of symbols (like N, S, E, W) to display for each line/stop combination.
-
-Each symbol matches the same position as in the other two variables.
-
-Example: Line 1 at stop A is northbound, line 2 at stop A is westbound, line 1 at stop B is southbound, and line 2 at stop B is eastbound:
-```
-LINE_DISAMBIGUATION_SYMBOLS="N,W,S,E"
-```
-NOTE: these can be whatever you want, including arrows or even multiple characters, just ensure there is room on your display
-
-**Putting It All Together:**
-
-Each position in the three lists corresponds to a unique (line, stop) pair and its symbol:
-
-| LINE_REFERENCES | LINE_STOPCODES | LINE_DISAMBIGUATION_SYMBOLS |
-|:---:|:---:|:---:|
-| 1 | A | N |
-| 2 | A | W |
-| 1 | B | S |
-| 2 | B | E |
-
-Make sure all three variables have the same number of entries, and that the entries correspond to the correct reference, stopcode, and symbol across all lists.
-
-Previous example configuration:
-```
-LINE_REFERENCES="1,2,1,2"
-LINE_STOPCODES="A,A,B,B"
-LINE_DISAMBIGUATION_SYMBOLS="N,W,S,E"
-```
-Example output:
-```
-1N 10 20
-2W 10 20
-1S 10 20
-2E 10 20
-```
-
-If only some lines require disambiguation those which don't can be omitted but spacing may be affected.
-
-Example configuration where stopcode B services line 2 and 3:
-```
-LINE_REFERENCES="1,1"
-LINE_STOPCODES="A,B"
-LINE_DISAMBIGUATION_SYMBOLS="N,S"
-```
-Example output:
-```
-1N 10 20
-2 10 20
-1S 10 20
-3 10 20
-```
-
-Spaces (" ") can be used as a blank to keep stops which don't have disambiguation in alignment with those that do.
-
-Example configuration where stopcode B services line 2 and 3 with spacing:
-```
-LINE_REFERENCES="1,2,1,3"
-LINE_STOPCODES="A,A,B,B"
-LINE_DISAMBIGUATION_SYMBOLS="N, ,S, "
-```
-Example output:
-```
-1N 10 20
-2  10 20
-1S 10 20
-3  10 20
-```
-
-### Display info configuration
-#### FUTURE_STOP_VISITS_SHOWN
-```
-FUTURE_STOP_VISITS_SHOWN="2"
-```
-How many future stop visits should be shown per line on the display
-
-### FONT
-```
-FONT="5x7.bdf"
-```
-Font of the display, see `fonts/` directory
-
-### FONT_COLOR
-```
-COLOR="<color-string>"
-```
-Color of font on the display, the following color options are valid:
-```
-BLACK WHITE RED GREEN BLUE YELLOW CYAN MAGENTA GRAY ORANGE PURPLE BROWN PINK LIME NAVY TEAL OLIVE MAROON SILVER GOLD MUNI MUNI_LESS MUNI_ALT MUNI_ALT_LESS
-```
-NOTE: These are just default RGB color values I ripped from the internet. Some of them are pretty off on LED matrix displays. Feel free to modify any of them by going into `modules/display_utils.py` and tweaking the RGB values by hand, or adding your own color entries.
