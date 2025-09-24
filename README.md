@@ -33,7 +33,7 @@ Total installation time is ~2 minutes on a Raspberry Pi 3.
 ## Environment Variables
 The above setup script copies the `.env.example` to `.env`, but still requires configuration. Each environment variable is documented below. Be sure to follow the instructions carefully.
 
-Variables set to non-empty strings ("<value>") or that are pre-populated are required
+Variables set to non-empty strings ("\<value\>") or that are pre-populated are required
 
 Variables set to empty strings ("") are optional
 
