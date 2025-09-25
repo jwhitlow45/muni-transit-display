@@ -14,7 +14,6 @@ class OpenData511Client:
             total=3,
             allowed_methods=[HTTPMethod.GET],
             status_forcelist=[500, 502, 503, 504],
-            retry_on_exceptions=[httpx.ReadTimeout],
             backoff_factor=1,
             respect_retry_after_header=True,
             max_backoff_wait=10,

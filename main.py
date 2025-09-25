@@ -1,4 +1,4 @@
-import sys
+import os
 import threading
 from collections import defaultdict
 from datetime import datetime, timezone
@@ -179,6 +179,9 @@ def api_loop():
                 logger.error(
                     f"API Request Failed for stopcode {stopcode}: {err.response.status_code} {err.response.text}\n{err.response.json()}"
                 )
+            except Exception:
+                # catch all other errors as the OpenData511 API is fickle and I don't wanna play error whack-a-mole
+                logger.error("Unexpected exception while trying to fetch stop data...continuing", exc_info=True)
 
         with display_info_lock:
             # NOTE: only want to overwrite stops for data we have fetched in case one of the API requests fails
@@ -200,4 +203,4 @@ if __name__ == "__main__":
         main()
     except Exception:
         logger.exception("Uncaught exception terminated program", exc_info=True)
-        sys.exit(1)
+        os._exit(1)
