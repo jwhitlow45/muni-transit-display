@@ -37,9 +37,9 @@ Run the `main.py` file in the root of the project:
 ```
 sudo python3 main.py
 ```
-It can also be run as a background process so it persists after your terminal is closed:
+It can also be run as a background process with `nohup` so it persists after your terminal is closed:
 ```
-sudo python3 main.py &
+sudo nohup python3 main.py &
 ```
 
 ## Development
